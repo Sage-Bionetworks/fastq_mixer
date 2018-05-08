@@ -13,7 +13,7 @@ requirements:
 
 hints:
   DockerRequirement:
-    dockerPull: fastq_mixer
+    dockerPull: quay.io/andrewelamb/fastq_mixer
 
 inputs:
 
