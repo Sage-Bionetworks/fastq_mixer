@@ -15,5 +15,3 @@ do_cwl <- function(yaml, log){
 }
 
 purrr::walk2(yamls, logs, do_cwl)
-
-
