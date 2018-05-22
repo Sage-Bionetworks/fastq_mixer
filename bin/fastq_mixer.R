@@ -6,7 +6,6 @@ library(stringr)
 
 parser = ArgumentParser(description = 'Mix fastq files into new fastqs')
 
-# required args
 parser$add_argument(
     "--fastq_files_p1",
     type = "character",
@@ -40,12 +39,18 @@ parser$add_argument(
     default = "result",
     help = "prefix for output fastqs")
 
+parser$add_argument(
+    "--total_reads",
+    type = "integer",
+    default = NULL,
+    help = "prefix for output fastqs")
+
 args <- parser$parse_args()
 
 combine_paired_fastq_files <- function(
     df, seed, output_prefix){
     
-    parameter_df <- create_parameter_df(df, seed)
+    parameter_df <- create_parameter_df(df, seed, total_reads)
     walk(parameter_df$sample_command, system)
     output_file1 <- str_c(output_prefix, "_p1.fastq")
     output_file2 <- str_c(output_prefix, "_p2.fastq")
@@ -61,9 +66,12 @@ merge_input_files <- function(input_files, output_file){
     walk(input_files, file.remove)
 }
 
-create_parameter_df <- function(df, seed){
+create_parameter_df <- function(df, seed, total_reads = NULL){
     df %>% 
-        mutate(n_reads = map_int(p1_fastq_file, find_fastq_n_reads)) %>%
+        mutate(n_reads = ifelse(
+            is.null(total_reads),
+            map_int(p1_fastq_file, find_fastq_n_reads),
+            total_reads)) %>%
         mutate(n_samples = as.integer(mean(n_reads) * fraction)) %>% 
         mutate(prefix = str_c("tmp", 1:nrow(df))) %>% 
         mutate(p1_sample_file = str_c(prefix, ".1.fastq")) %>% 
@@ -115,8 +123,5 @@ df <- data_frame(
     "p1_fastq_file" = args$fastq_files_p1,
     "p2_fastq_file" = args$fastq_files_p2)
 
-print(df)
-print(args$seed)
-print(args$output_prefix)
 combine_paired_fastq_files(df, args$seed, args$output_prefix)
 

@@ -48,6 +48,11 @@ inputs:
     default: "result"
     inputBinding:
       prefix: --output_prefix
+  
+  total_reads:
+    type: ["null", int]
+    inputBinding:
+      prefix: --total_reads
 
 outputs:
 
