@@ -48,7 +48,7 @@ parser$add_argument(
 args <- parser$parse_args()
 
 combine_paired_fastq_files <- function(
-    df, seed, output_prefix){
+    df, seed, output_prefix, total_reads){
     
     parameter_df <- create_parameter_df(df, seed, total_reads)
     walk(parameter_df$sample_command, system)
@@ -66,7 +66,7 @@ merge_input_files <- function(input_files, output_file){
     walk(input_files, file.remove)
 }
 
-create_parameter_df <- function(df, seed, total_reads = NULL){
+create_parameter_df <- function(df, seed, total_reads){
     df %>% 
         mutate(n_reads = ifelse(
             is.null(total_reads),
