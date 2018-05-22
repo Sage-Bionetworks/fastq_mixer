@@ -123,5 +123,5 @@ df <- data_frame(
     "p1_fastq_file" = args$fastq_files_p1,
     "p2_fastq_file" = args$fastq_files_p2)
 
-combine_paired_fastq_files(df, args$seed, args$output_prefix)
+combine_paired_fastq_files(df, args$seed, args$output_prefix, args$total_reads)
 
